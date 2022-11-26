@@ -4,7 +4,6 @@ import java.util.*
 
 typealias Timestamp = Date
 typealias Dictionary<KEY, VALUE> = LastWriteWinsElementDictionary<KEY, VALUE>
-
 data class WithTimestamp<VALUE>(val value: VALUE, val timestamp: Timestamp)
 
 class LastWriteWinsElementDictionary<KEY, VALUE>(
