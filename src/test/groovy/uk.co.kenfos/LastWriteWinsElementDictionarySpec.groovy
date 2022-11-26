@@ -2,15 +2,12 @@ package uk.co.kenfos
 
 import spock.lang.Specification
 
-import static java.lang.System.lineSeparator
+import static uk.co.kenfos.utils.DictionaryUtils.dictionaryFrom
 
 class LastWriteWinsElementDictionarySpec extends Specification {
-    private WHITE_SPACE = " ";
-    private SEPARATOR = ":";
-
     def 'can add key-value pairs to the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "0"
@@ -26,7 +23,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'when adding a key-value pair multiple times the last add operation wins'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "A1"
@@ -41,7 +38,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'can remove a key-value pair from the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         !dictionary1.lookup("A")
@@ -56,7 +53,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'ignores removing a key-value pair that does not yet exist'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "0"
@@ -71,7 +68,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'includes a key-value pair in the dictionary if it is added again after being removed'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "0"
@@ -87,7 +84,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'does not include a key-value pair in the dictionary if it is added, removed, added and removed again'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         !dictionary1.lookup("A")
@@ -104,7 +101,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'allows to update the value of an existing key'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "1"
@@ -119,7 +116,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'ignores updating the value of a key that is not found'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         !dictionary1.lookup("A")
@@ -133,7 +130,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'does not allow to update the value of a non yet existing key'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "0"
@@ -148,7 +145,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an ADD event coming out of order does not affect the computed state of the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "0"
@@ -164,7 +161,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an UPDATE event coming out of order does not affect the computed state of the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "2"
@@ -180,7 +177,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'a REMOVE event coming out of order does not affect the computed state of the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         !dictionary1.lookup("A")
@@ -196,7 +193,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an ADD received multiple times does not affect the computed state of the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "2"
@@ -213,7 +210,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "0"
@@ -230,7 +227,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an UPDATE message received multiple times does not affect the computed state of the dictionary'(node1) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
+        def dictionary1 = dictionaryFrom(node1)
 
         expect:
         dictionary1.lookup("A") == "3"
@@ -248,9 +245,9 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'can merge dictionaries'(node1, node2, node3) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
-        def dictionary3 = dictionaryFrom(parse(node3))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
+        def dictionary3 = dictionaryFrom(node3)
         def dictionary = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2, dictionary3])
 
         expect:
@@ -277,8 +274,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'last added value wins when merging multiple dictionaries'(node1, node2) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
         def dictionary = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
 
         expect:
@@ -301,20 +298,17 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'merge is commutative'(node1, node2) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
         def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        mergedDictionary1.lookup("A") == "2"
-        mergedDictionary1.lookup("B") == "5"
-        !mergedDictionary1.lookup("C")
-
-        and:
-        mergedDictionary2.lookup("A") == "2"
-        mergedDictionary2.lookup("B") == "5"
-        !mergedDictionary2.lookup("C")
+        [mergedDictionary1, mergedDictionary2].each { dictionary ->
+            assert dictionary.lookup("A") == "2"
+            assert dictionary.lookup("B") == "5"
+            assert !dictionary.lookup("C")
+        }
 
         where:
         node1 =
@@ -338,9 +332,9 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'merge is associative'(node1, node2, node3) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
-        def dictionary3 = dictionaryFrom(parse(node3))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
+        def dictionary3 = dictionaryFrom(node3)
 
         def partiallyMergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def partiallyMergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary3])
@@ -349,14 +343,11 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary1, partiallyMergedDictionary2])
 
         expect:
-        mergedDictionary1.lookup("A") == "3"
-        mergedDictionary1.lookup("B") == "7"
-        !mergedDictionary1.lookup("C")
-
-        and:
-        mergedDictionary2.lookup("A") == "3"
-        mergedDictionary2.lookup("B") == "7"
-        !mergedDictionary2.lookup("C")
+        [mergedDictionary1, mergedDictionary2].each { dictionary ->
+            assert dictionary.lookup("A") == "3"
+            assert dictionary.lookup("B") == "7"
+            assert !dictionary.lookup("C")
+        }
 
         where:
         node1 =
@@ -387,21 +378,18 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'merge is idempotent'(node1, node2) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
 
         def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([mergedDictionary1, dictionary1, dictionary2])
 
         expect:
-        mergedDictionary1.lookup("A") == "3"
-        mergedDictionary1.lookup("B") == "7"
-        !mergedDictionary1.lookup("C")
-
-        and:
-        mergedDictionary2.lookup("A") == "3"
-        mergedDictionary2.lookup("B") == "7"
-        !mergedDictionary2.lookup("C")
+        [mergedDictionary1, mergedDictionary2].each { dictionary ->
+            assert dictionary.lookup("A") == "3"
+            assert dictionary.lookup("B") == "7"
+            assert !dictionary.lookup("C")
+        }
 
         where:
         node1 =
@@ -429,17 +417,14 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'bias between ADD + REMOVE is handled'() {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
 
         def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        !mergedDictionary1.lookup("A")
-
-        and:
-        !mergedDictionary2.lookup("A")
+        [mergedDictionary1, mergedDictionary2].each { dictionary -> assert !dictionary.lookup("A") }
 
         where:
         node1 =
@@ -456,17 +441,14 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'bias between UPDATE + REMOVE is handled'() {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
 
         def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        !mergedDictionary1.lookup("A")
-
-        and:
-        !mergedDictionary2.lookup("A")
+        [mergedDictionary1, mergedDictionary2].each { dictionary -> assert !dictionary.lookup("A") }
 
         where:
         node1 =
@@ -484,17 +466,14 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'conflict between ADD + ADD is handled'(node1, node2) {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
 
         def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        mergedDictionary1.lookup("A") == "1"
-
-        and:
-        mergedDictionary2.lookup("A") == "1"
+        [mergedDictionary1, mergedDictionary2].each { dictionary -> assert dictionary.lookup("A") == "1" }
 
         where:
         node1 =
@@ -510,17 +489,14 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'conflict between ADD + UPDATE is handled'() {
         given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
 
         def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        mergedDictionary1.lookup("A") == "Y"
-
-        and:
-        mergedDictionary2.lookup("A") == "Y"
+        [mergedDictionary1, mergedDictionary2].each { dictionary -> assert dictionary.lookup("A") == "Y" }
 
         where:
         node1 =
@@ -534,43 +510,4 @@ class LastWriteWinsElementDictionarySpec extends Specification {
             OPERATION:UPDATE KEY:A VALUE:Y TIMESTAMP:1
         """
     }
-
-    def dictionaryFrom(List<Event> events) {
-        def emptyDictionary = new LastWriteWinsElementDictionary<String, String>()
-        events.inject(emptyDictionary) { dictionary, event ->
-            if (event.type == EventType.ADD) dictionary.add(event.key, event.value, event.timestamp)
-            else if (event.type == EventType.REMOVE) dictionary.remove(event.key, event.timestamp)
-            else if (event.type == EventType.UPDATE) dictionary.update(event.key, event.value, event.timestamp)
-            else dictionary
-        }
-    }
-
-    def parse(String text) {
-        text.split(lineSeparator()).toList().collect { it.trim() }.findAll { it }.collect { parseLine(it) }
-    }
-
-    def parseLine(String line) {
-        def type = line.takeBetween("OPERATION${SEPARATOR}", WHITE_SPACE)
-        def key = line.takeBetween("KEY${SEPARATOR}", WHITE_SPACE)
-        def value = line.takeBetween("VALUE${SEPARATOR}", WHITE_SPACE)
-        def timestamp = line.takeAfter("TIMESTAMP${SEPARATOR}")
-
-        new Event(type: parseEventType(type), key: key, value: value, timestamp: parseTimeStamp(timestamp))
-    }
-
-    def parseEventType = { String eventType -> EventType.values().find { it.toString().startsWith(eventType) } }
-    def parseTimeStamp = { String timestamp -> new Date(timestamp.toInteger()) }
-}
-
-class Event {
-    EventType type
-    String key
-    String value
-    Date timestamp
-}
-
-enum EventType {
-    ADD,
-    REMOVE,
-    UPDATE
 }
