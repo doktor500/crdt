@@ -26,15 +26,15 @@ class LastWriteWinsElementDictionary<KEY, VALUE>(
 
     fun update(key: KEY, value: VALUE, timestamp: Timestamp): Dictionary<KEY, VALUE> {
         val item = added[key]
-        val validUpdate = item != null && item.timestamp.before(timestamp)
+        val validUpdate = item != null
         return if (validUpdate) return this.add(key, value, timestamp) else this
     }
 
     fun lookup(key: KEY): VALUE? {
         val item = added[key]
         val removedItem = removed[key]
-        val activeKey = removedItem == null || removedItem.before(item?.timestamp)
-        return if (activeKey) item?.value else null
+        val activeItem = removedItem == null || removedItem.before(item?.timestamp)
+        return if (activeItem) item?.value else null
     }
 
     private fun priorityInConflict(item1: WithTimestamp<VALUE>, item2: WithTimestamp<VALUE>): Boolean {
