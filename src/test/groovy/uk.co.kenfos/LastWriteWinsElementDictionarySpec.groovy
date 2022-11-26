@@ -7,11 +7,11 @@ import static uk.co.kenfos.utils.DictionaryUtils.dictionaryFrom
 class LastWriteWinsElementDictionarySpec extends Specification {
     def 'can add key-value pairs to the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "0"
-        dictionary1.lookup("B") == "1"
+        dictionary.lookup("A") == "0"
+        dictionary.lookup("B") == "1"
 
         where:
         node1 =
@@ -23,10 +23,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'when adding a key-value pair multiple times the last add operation wins'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "A1"
+        dictionary.lookup("A") == "A1"
 
         where:
         node1 =
@@ -38,10 +38,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'can remove a key-value pair from the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        !dictionary1.lookup("A")
+        !dictionary.lookup("A")
 
         where:
         node1 =
@@ -53,10 +53,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'ignores removing a key-value pair that does not yet exist'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "0"
+        dictionary.lookup("A") == "0"
 
         where:
         node1 =
@@ -68,10 +68,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'includes a key-value pair in the dictionary if it is added again after being removed'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "0"
+        dictionary.lookup("A") == "0"
 
         where:
         node1 =
@@ -84,10 +84,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'does not include a key-value pair in the dictionary if it is added, removed, added and removed again'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        !dictionary1.lookup("A")
+        !dictionary.lookup("A")
 
         where:
         node1 =
@@ -101,10 +101,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'allows to update the value of an existing key'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "1"
+        dictionary.lookup("A") == "1"
 
         where:
         node1 =
@@ -116,10 +116,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'ignores updating the value of a key that is not found'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        !dictionary1.lookup("A")
+        !dictionary.lookup("A")
 
         where:
         node1 =
@@ -130,10 +130,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'does not allow to update the value of a non yet existing key'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "0"
+        dictionary.lookup("A") == "0"
 
         where:
         node1 =
@@ -145,10 +145,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an ADD event coming out of order does not affect the computed state of the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "0"
+        dictionary.lookup("A") == "0"
 
         where:
         node1 =
@@ -161,10 +161,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an UPDATE event coming out of order does not affect the computed state of the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "2"
+        dictionary.lookup("A") == "2"
 
         where:
         node1 =
@@ -177,10 +177,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'a REMOVE event coming out of order does not affect the computed state of the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        !dictionary1.lookup("A")
+        !dictionary.lookup("A")
 
         where:
         node1 =
@@ -193,10 +193,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an ADD received multiple times does not affect the computed state of the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "2"
+        dictionary.lookup("A") == "2"
 
         where:
         node1 =
@@ -210,10 +210,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "0"
+        dictionary.lookup("A") == "0"
 
         where:
         node1 =
@@ -227,10 +227,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
     def 'an UPDATE message received multiple times does not affect the computed state of the dictionary'() {
         given:
-        def dictionary1 = dictionaryFrom(node1)
+        def dictionary = dictionaryFrom(node1)
 
         expect:
-        dictionary1.lookup("A") == "3"
+        dictionary.lookup("A") == "3"
 
         where:
         node1 =
@@ -276,11 +276,11 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
-        def dictionary = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
+        def mergedDictionary = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
 
         expect:
-        dictionary.lookup("A") == "0"
-        dictionary.lookup("B") == "2"
+        mergedDictionary.lookup("A") == "0"
+        mergedDictionary.lookup("B") == "2"
 
         where:
         node1 =
