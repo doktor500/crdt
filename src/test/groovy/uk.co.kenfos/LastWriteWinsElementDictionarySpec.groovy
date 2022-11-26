@@ -208,23 +208,6 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'() {
-        given:
-        def dictionary = dictionaryFrom(node1)
-
-        expect:
-        dictionary.lookup("A") == "0"
-
-        where:
-        node1 =
-        """
-            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
-            OPERATION:REMOVE KEY:A         TIMESTAMP:1
-            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:2
-            OPERATION:REMOVE KEY:A         TIMESTAMP:1
-        """
-    }
-
     def 'an UPDATE message received multiple times does not affect the computed state of the dictionary'() {
         given:
         def dictionary = dictionaryFrom(node1)
@@ -240,6 +223,23 @@ class LastWriteWinsElementDictionarySpec extends Specification {
             OPERATION:UPDATE KEY:A VALUE:3 TIMESTAMP:3
             OPERATION:ADD    KEY:A VALUE:1 TIMESTAMP:1
             OPERATION:UPDATE KEY:A VALUE:2 TIMESTAMP:2
+        """
+    }
+
+    def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'() {
+        given:
+        def dictionary = dictionaryFrom(node1)
+
+        expect:
+        dictionary.lookup("A") == "0"
+
+        where:
+        node1 =
+        """
+            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
+            OPERATION:REMOVE KEY:A         TIMESTAMP:1
+            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:2
+            OPERATION:REMOVE KEY:A         TIMESTAMP:1
         """
     }
 
