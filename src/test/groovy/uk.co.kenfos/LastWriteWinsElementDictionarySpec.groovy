@@ -85,7 +85,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'does not include a key-value pair in the dictionary if it is removed, added and removed again'(node1) {
+    def 'does not include a key-value pair in the dictionary if it is added, removed, added and removed again'(node1) {
         given:
         def dictionary1 = dictionaryFrom(parse(node1))
 
@@ -162,7 +162,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'an ADD received multiple times does not affect the computed state of the dictionary'(node1) {
+    def 'an UPDATE event coming out of order does not affect the computed state of the dictionary'(node1) {
         given:
         def dictionary1 = dictionaryFrom(parse(node1))
 
@@ -173,9 +173,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         node1 =
         """
             OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
-            OPERATION:ADD    KEY:A VALUE:2 TIMESTAMP:2
-            OPERATION:REMOVE KEY:A         TIMESTAMP:1
-            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
+            OPERATION:UPDATE KEY:A VALUE:2 TIMESTAMP:2
+            OPERATION:ADD    KEY:A VALUE:1 TIMESTAMP:1
         """
     }
 
@@ -195,6 +194,23 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
+    def 'an ADD received multiple times does not affect the computed state of the dictionary'(node1) {
+        given:
+        def dictionary1 = dictionaryFrom(parse(node1))
+
+        expect:
+        dictionary1.lookup("A") == "2"
+
+        where:
+        node1 =
+        """
+            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
+            OPERATION:ADD    KEY:A VALUE:2 TIMESTAMP:2
+            OPERATION:REMOVE KEY:A         TIMESTAMP:1
+            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
+        """
+    }
+
     def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'(node1) {
         given:
         def dictionary1 = dictionaryFrom(parse(node1))
@@ -209,22 +225,6 @@ class LastWriteWinsElementDictionarySpec extends Specification {
             OPERATION:REMOVE KEY:A         TIMESTAMP:1
             OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:2
             OPERATION:REMOVE KEY:A         TIMESTAMP:1
-        """
-    }
-
-    def 'an UPDATE event coming out of order does not affect the computed state of the dictionary'(node1) {
-        given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-
-        expect:
-        dictionary1.lookup("A") == "2"
-
-        where:
-        node1 =
-        """
-            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
-            OPERATION:UPDATE KEY:A VALUE:2 TIMESTAMP:2
-            OPERATION:ADD    KEY:A VALUE:1 TIMESTAMP:1
         """
     }
 
@@ -492,6 +492,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
         expect:
         mergedDictionary1.lookup("A") == "1"
+
+        and:
         mergedDictionary2.lookup("A") == "1"
 
         where:
