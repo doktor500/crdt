@@ -12,29 +12,33 @@ class LastWriteWinsElementDictionary<KEY, VALUE>(
     val removed: Map<KEY, Timestamp> = emptyMap()
 ) {
     fun add(key: KEY, value: VALUE, timestamp: Timestamp): Dictionary<KEY, VALUE> {
-        val addedKey = added[key]
-        val validAdd = addedKey == null || addedKey.timestamp.before(timestamp)
-        val itemWithTimestamp = Pair(key, WithTimestamp(value, timestamp))
-        return if (validAdd) Dictionary(added.plus(itemWithTimestamp), removed) else this
+        val item = added[key]
+        val newItem = Pair(key, WithTimestamp(value, timestamp))
+        val validAdd = item == null || item.timestamp.before(timestamp) || priorityInConflict(item, newItem.second)
+        return if (validAdd) Dictionary(added.plus(newItem), removed) else this
     }
 
     fun remove(key: KEY, timestamp: Timestamp): Dictionary<KEY, VALUE> {
-        val addedKey = added[key]
-        val itemExists = addedKey != null
+        val item = added[key]
+        val itemExists = item != null
         return if (itemExists) Dictionary(added, removed.plus(Pair(key, timestamp))) else this
     }
 
     fun update(key: KEY, value: VALUE, timestamp: Timestamp): Dictionary<KEY, VALUE> {
-        val addedKey = added[key]
-        val validUpdate = addedKey != null && addedKey.timestamp.before(timestamp)
+        val item = added[key]
+        val validUpdate = item != null && item.timestamp.before(timestamp)
         return if (validUpdate) return this.add(key, value, timestamp) else this
     }
 
     fun lookup(key: KEY): VALUE? {
-        val addedKey = added[key]
-        val removedKey = removed[key]
-        val activeKey = removedKey == null || removedKey.before(addedKey?.timestamp)
-        return if (activeKey) addedKey?.value else null
+        val item = added[key]
+        val removedItem = removed[key]
+        val activeKey = removedItem == null || removedItem.before(item?.timestamp)
+        return if (activeKey) item?.value else null
+    }
+
+    private fun priorityInConflict(item1: WithTimestamp<VALUE>, item2: WithTimestamp<VALUE>): Boolean {
+        return if (item1.timestamp == item2.timestamp) item1.value.hashCode() < item2.value.hashCode() else false
     }
 
     companion object {

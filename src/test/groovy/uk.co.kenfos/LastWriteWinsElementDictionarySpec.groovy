@@ -1,6 +1,5 @@
 package uk.co.kenfos
 
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static java.lang.System.lineSeparator
@@ -483,7 +482,6 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    @Ignore
     def 'conflict between ADD + ADD is handled'(node1, node2) {
         given:
         def dictionary1 = dictionaryFrom(parse(node1))
@@ -493,8 +491,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        mergedDictionary1.lookup("A") == "???"
-        mergedDictionary2.lookup("A") == "???"
+        mergedDictionary1.lookup("A") == "1"
+        mergedDictionary2.lookup("A") == "1"
 
         where:
         node1 =
@@ -508,7 +506,6 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    @Ignore
     def 'conflict between ADD + UPDATE is handled'() {
         given:
         def dictionary1 = dictionaryFrom(parse(node1))
@@ -518,10 +515,10 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
 
         expect:
-        mergedDictionary1.lookup("A") == "???"
+        mergedDictionary1.lookup("A") == "Y"
 
         and:
-        mergedDictionary2.lookup("A") == "???"
+        mergedDictionary2.lookup("A") == "Y"
 
         where:
         node1 =
@@ -533,32 +530,6 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
             OPERATION:ADD    KEY:A VALUE:X TIMESTAMP:0
             OPERATION:UPDATE KEY:A VALUE:Y TIMESTAMP:1
-        """
-    }
-
-    @Ignore
-    def 'conflict between ADD + REMOVE is handled'(node1, node2) {
-        given:
-        def dictionary1 = dictionaryFrom(parse(node1))
-        def dictionary2 = dictionaryFrom(parse(node2))
-
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
-
-        expect:
-        mergedDictionary1.lookup("A") == "???"
-        mergedDictionary2.lookup("A") == "???"
-
-        where:
-        node1 =
-        """
-            OPERATION:ADD    KEY:A VALUE:0 TIMESTAMP:0
-            OPERATION:REMOVE KEY:A         TIMESTAMP:1
-        """
-
-        node2 =
-        """
-            OPERATION:ADD KEY:A VALUE:1 TIMESTAMP:1
         """
     }
 
