@@ -5,8 +5,8 @@ import uk.co.kenfos.LastWriteWinsElementDictionary
 import static java.lang.System.lineSeparator
 
 class DictionaryUtils {
-    private static WHITE_SPACE = " ";
-    private static SEPARATOR = ":";
+    private static WHITE_SPACE = " "
+    private static SEPARATOR = ":"
 
     static dictionaryFrom(String text) {
         def events = parse(text)
