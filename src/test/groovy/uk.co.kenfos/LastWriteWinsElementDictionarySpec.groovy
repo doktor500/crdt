@@ -5,7 +5,7 @@ import spock.lang.Specification
 import static uk.co.kenfos.utils.DictionaryUtils.dictionaryFrom
 
 class LastWriteWinsElementDictionarySpec extends Specification {
-    def 'can add key-value pairs to the dictionary'(node1) {
+    def 'can add key-value pairs to the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -21,7 +21,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'when adding a key-value pair multiple times the last add operation wins'(node1) {
+    def 'when adding a key-value pair multiple times the last add operation wins'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -36,7 +36,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'can remove a key-value pair from the dictionary'(node1) {
+    def 'can remove a key-value pair from the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -51,7 +51,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'ignores removing a key-value pair that does not yet exist'(node1) {
+    def 'ignores removing a key-value pair that does not yet exist'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -66,7 +66,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'includes a key-value pair in the dictionary if it is added again after being removed'(node1) {
+    def 'includes a key-value pair in the dictionary if it is added again after being removed'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -82,7 +82,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'does not include a key-value pair in the dictionary if it is added, removed, added and removed again'(node1) {
+    def 'does not include a key-value pair in the dictionary if it is added, removed, added and removed again'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -99,7 +99,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'allows to update the value of an existing key'(node1) {
+    def 'allows to update the value of an existing key'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -114,7 +114,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'ignores updating the value of a key that is not found'(node1) {
+    def 'ignores updating the value of a key that is not found'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -128,7 +128,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'does not allow to update the value of a non yet existing key'(node1) {
+    def 'does not allow to update the value of a non yet existing key'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -143,7 +143,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'an ADD event coming out of order does not affect the computed state of the dictionary'(node1) {
+    def 'an ADD event coming out of order does not affect the computed state of the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -159,7 +159,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'an UPDATE event coming out of order does not affect the computed state of the dictionary'(node1) {
+    def 'an UPDATE event coming out of order does not affect the computed state of the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -175,7 +175,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'a REMOVE event coming out of order does not affect the computed state of the dictionary'(node1) {
+    def 'a REMOVE event coming out of order does not affect the computed state of the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -191,7 +191,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'an ADD received multiple times does not affect the computed state of the dictionary'(node1) {
+    def 'an ADD received multiple times does not affect the computed state of the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -208,7 +208,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'(node1) {
+    def 'a REMOVE message received multiple times does not affect the computed state of the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -225,7 +225,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'an UPDATE message received multiple times does not affect the computed state of the dictionary'(node1) {
+    def 'an UPDATE message received multiple times does not affect the computed state of the dictionary'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
 
@@ -243,7 +243,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'can merge dictionaries'(node1, node2, node3) {
+    def 'can merge dictionaries'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
@@ -272,7 +272,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'last added value wins when merging multiple dictionaries'(node1, node2) {
+    def 'last added value wins when merging multiple dictionaries'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
@@ -296,7 +296,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'merge is commutative'(node1, node2) {
+    def 'merge is commutative'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
@@ -330,7 +330,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'merge is associative'(node1, node2, node3) {
+    def 'merge is associative'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
@@ -376,7 +376,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'merge is idempotent'(node1, node2) {
+    def 'merge is idempotent'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
@@ -464,7 +464,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'conflict between ADD + ADD is handled'(node1, node2) {
+    def 'conflict between ADD + ADD is handled'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
