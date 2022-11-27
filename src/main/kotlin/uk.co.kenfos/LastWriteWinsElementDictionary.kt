@@ -49,6 +49,15 @@ class LastWriteWinsElementDictionary<KEY, VALUE>(
                 .let { added -> dictionaries.fold(added) { result, current -> mergeRemoved(result, current.removed) } }
         }
 
+        @JvmStatic //optimised version of the algorithm that prevents O(n^2) complexity
+        fun <KEY, VALUE> mergeOptimized(dictionaries: List<Dictionary<KEY, VALUE>>): Dictionary<KEY, VALUE> {
+            val added = dictionaries.flatMap { dictionary -> dictionary.added.entries }
+                .fold(Dictionary<KEY, VALUE>()) { result, (key, item) -> result.add(key, item.value, item.timestamp) }
+            
+            return dictionaries.flatMap { dictionary -> dictionary.removed.entries }
+                .fold(added) { result, entry -> result.remove(entry.key, entry.value) }
+        }
+
         private fun <K, V> mergeAdded(result: Dictionary<K, V>, added: Map<K, WithTimestamp<V>>): Dictionary<K, V> =
             added.entries.fold(result) { dictionary, (key, item) -> dictionary.add(key, item.value, item.timestamp) }
 
