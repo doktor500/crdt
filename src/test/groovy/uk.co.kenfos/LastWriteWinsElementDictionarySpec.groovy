@@ -272,7 +272,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         """
     }
 
-    def 'last added value wins when merging multiple dictionaries'() {
+    def 'the last added value wins when merging multiple dictionaries'() {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
