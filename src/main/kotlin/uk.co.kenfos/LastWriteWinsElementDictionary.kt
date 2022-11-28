@@ -1,54 +1,52 @@
 package uk.co.kenfos
 
-import java.time.Instant
+typealias Dictionary<K, V, T> = LastWriteWinsElementDictionary<K, V, T>
 
-typealias Dictionary<KEY, VALUE> = LastWriteWinsElementDictionary<KEY, VALUE>
+data class WithTimestamp<V, T>(val value: V, val timestamp: T)
 
-data class WithInstant<VALUE>(val value: VALUE, val instant: Instant)
-
-class LastWriteWinsElementDictionary<KEY, VALUE>(
-    val added: MutableMap<KEY, WithInstant<VALUE>> = LinkedHashMap(),
-    val removed: MutableMap<KEY, Instant> = LinkedHashMap()
-) {
-    fun add(key: KEY, value: VALUE, instant: Instant): Dictionary<KEY, VALUE> {
+class LastWriteWinsElementDictionary<K, V, T>(
+    val added: MutableMap<K, WithTimestamp<V, T>> = LinkedHashMap(),
+    val removed: MutableMap<K, T> = LinkedHashMap()
+) where T : Comparable<T> {
+    fun add(key: K, value: V, timestamp: T): Dictionary<K, V, T> {
         val item = added[key]
-        val newItem = Pair(key, WithInstant(value, instant))
-        val validAdd = item == null || item.instant.isBefore(instant) || priorityInConflict(item, newItem.second)
-        if (validAdd) added[key] = WithInstant(value, instant)
+        val newItem = Pair(key, WithTimestamp(value, timestamp))
+        val validAdd = item == null || item.timestamp < timestamp || priorityInConflict(item, newItem.second)
+        if (validAdd) added[key] = WithTimestamp(value, timestamp)
         return this
     }
 
-    fun remove(key: KEY, instant: Instant): Dictionary<KEY, VALUE> {
+    fun remove(key: K, timestamp: T): Dictionary<K, V, T> {
         val item = added[key]
         val itemExists = item != null
-        if (itemExists) removed[key] = instant
+        if (itemExists) removed[key] = timestamp
         return this
     }
 
-    fun update(key: KEY, value: VALUE, instant: Instant): Dictionary<KEY, VALUE> {
+    fun update(key: K, value: V, timestamp: T): Dictionary<K, V, T> {
         val item = added[key]
         val validUpdate = item != null
-        return if (validUpdate) return this.add(key, value, instant) else this
+        return if (validUpdate) return this.add(key, value, timestamp) else this
     }
 
-    fun lookup(key: KEY): VALUE? {
+    fun lookup(key: K): V? {
         val item = added[key]
         val removedItem = removed[key]
-        val activeItem = removedItem == null || removedItem.isBefore(item?.instant)
+        val activeItem = removedItem == null || (item != null && removedItem < item.timestamp)
         return if (activeItem) item?.value else null
     }
 
-    private fun priorityInConflict(item1: WithInstant<VALUE>, item2: WithInstant<VALUE>): Boolean {
-        return if (item1.instant == item2.instant) item1.value.hashCode() < item2.value.hashCode() else false
+    private fun priorityInConflict(item1: WithTimestamp<V, T>, item2: WithTimestamp<V, T>): Boolean {
+        return if (item1.timestamp == item2.timestamp) item1.value.hashCode() < item2.value.hashCode() else false
     }
 
     companion object {
         @JvmStatic
-        fun <KEY, VALUE> merge(dictionaries: List<Dictionary<KEY, VALUE>>): Dictionary<KEY, VALUE> {
+        fun <K, V, T> merge(vararg dictionaries: Dictionary<K, V, T>): Dictionary<K, V, T> where T : Comparable<T> {
             val addedEntries = dictionaries.flatMap { dictionary -> dictionary.added.entries }
             val removedEntries = dictionaries.flatMap { dictionary -> dictionary.removed.entries }
             return addedEntries
-                .fold(Dictionary<KEY, VALUE>()) { result, (key, item) -> result.add(key, item.value, item.instant) }
+                .fold(Dictionary<K, V, T>()) { result, (key, item) -> result.add(key, item.value, item.timestamp) }
                 .let { added -> removedEntries.fold(added) { result, entry -> result.remove(entry.key, entry.value) } }
         }
     }

@@ -12,7 +12,7 @@ class DictionaryUtils {
 
     static dictionaryFrom(String text) {
         def events = parse(text)
-        def emptyDictionary = new LastWriteWinsElementDictionary<String, String>()
+        def emptyDictionary = new LastWriteWinsElementDictionary<String, String, Instant>()
         events.inject(emptyDictionary) { dictionary, event ->
             if (event.type == EventType.ADD) dictionary.add(event.key, event.value, event.timestamp)
             else if (event.type == EventType.REMOVE) dictionary.remove(event.key, event.timestamp)

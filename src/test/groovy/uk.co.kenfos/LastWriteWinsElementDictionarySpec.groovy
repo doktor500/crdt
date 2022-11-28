@@ -248,7 +248,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
         def dictionary3 = dictionaryFrom(node3)
-        def dictionary = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2, dictionary3])
+        def dictionary = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2, dictionary3)
 
         expect:
         dictionary.lookup("A") == "0"
@@ -276,7 +276,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
-        def mergedDictionary = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
+        def mergedDictionary = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
 
         expect:
         mergedDictionary.lookup("A") == "0"
@@ -300,8 +300,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         given:
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary2, dictionary1)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary ->
@@ -336,11 +336,11 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary2 = dictionaryFrom(node2)
         def dictionary3 = dictionaryFrom(node3)
 
-        def partiallyMergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def partiallyMergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary3])
+        def partiallyMergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def partiallyMergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary2, dictionary3)
 
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([partiallyMergedDictionary1, dictionary3])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary1, partiallyMergedDictionary2])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(partiallyMergedDictionary1, dictionary3)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary1, partiallyMergedDictionary2)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary ->
@@ -381,8 +381,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
 
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([mergedDictionary1, dictionary1, dictionary2])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(mergedDictionary1, dictionary1, dictionary2)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary ->
@@ -420,8 +420,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
 
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary2, dictionary1)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary -> assert !dictionary.lookup("A") }
@@ -444,8 +444,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
 
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary2, dictionary1)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary -> assert !dictionary.lookup("A") }
@@ -469,8 +469,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
 
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary2, dictionary1)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary -> assert dictionary.lookup("A") == "1" }
@@ -492,8 +492,8 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         def dictionary1 = dictionaryFrom(node1)
         def dictionary2 = dictionaryFrom(node2)
 
-        def mergedDictionary1 = LastWriteWinsElementDictionary.merge([dictionary1, dictionary2])
-        def mergedDictionary2 = LastWriteWinsElementDictionary.merge([dictionary2, dictionary1])
+        def mergedDictionary1 = LastWriteWinsElementDictionary.merge(dictionary1, dictionary2)
+        def mergedDictionary2 = LastWriteWinsElementDictionary.merge(dictionary2, dictionary1)
 
         expect:
         [mergedDictionary1, mergedDictionary2].each { dictionary -> assert dictionary.lookup("A") == "Y" }
