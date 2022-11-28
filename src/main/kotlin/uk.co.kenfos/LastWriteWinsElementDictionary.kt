@@ -36,6 +36,10 @@ class LastWriteWinsElementDictionary<K, V, T>(
         return if (activeItem) item?.value else null
     }
 
+    fun merge(dictionary: Dictionary<K, V, T>): Dictionary<K, V, T> {
+        return merge(this, dictionary)
+    }
+
     private fun priorityInConflict(item1: WithTimestamp<V, T>, item2: WithTimestamp<V, T>): Boolean {
         return if (item1.timestamp == item2.timestamp) item1.value.hashCode() < item2.value.hashCode() else false
     }

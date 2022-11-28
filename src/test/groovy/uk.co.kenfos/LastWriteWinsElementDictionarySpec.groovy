@@ -510,4 +510,25 @@ class LastWriteWinsElementDictionarySpec extends Specification {
             OPERATION:UPDATE KEY:A VALUE:Y TIMESTAMP:1
         """
     }
+
+    def 'can merge itself with another dictionary'() {
+        def dictionary1 = dictionaryFrom(node1)
+        def dictionary2 = dictionaryFrom(node2)
+        def dictionary = dictionary1.merge(dictionary2)
+
+        expect:
+        dictionary.lookup("A") == "0"
+        dictionary.lookup("B") == "1"
+
+        where:
+        node1 =
+        """
+            OPERATION:ADD KEY:A VALUE:0 TIMESTAMP:0
+        """
+
+        node2 =
+        """
+            OPERATION:ADD KEY:B VALUE:1 TIMESTAMP:1
+        """
+    }
 }
