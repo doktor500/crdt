@@ -5,8 +5,8 @@ typealias Dictionary<K, V, T> = LastWriteWinsElementDictionary<K, V, T>
 data class WithTimestamp<V, T>(val value: V, val timestamp: T)
 
 class LastWriteWinsElementDictionary<K, V, T>(
-    val added: MutableMap<K, WithTimestamp<V, T>> = LinkedHashMap(),
-    val removed: MutableMap<K, T> = LinkedHashMap()
+    private val added: MutableMap<K, WithTimestamp<V, T>> = LinkedHashMap(),
+    private val removed: MutableMap<K, T> = LinkedHashMap()
 ) where T : Comparable<T> {
     fun add(key: K, value: V, timestamp: T): Dictionary<K, V, T> {
         val item = added[key]
