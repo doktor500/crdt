@@ -39,7 +39,7 @@ class LastWriteWinsElementDictionary<K, V, T>(
     }
 
     fun merge(dictionary: Dictionary<K, V, T>): Dictionary<K, V, T> {
-        return mergeEntries(this, dictionary.added.entries.toList(), dictionary.removed.entries.toList())
+        return mergeEntries(this, dictionary.added.entries, dictionary.removed.entries)
     }
 
     private fun priorityInConflict(item1: WithTimestamp<V, T>, item2: WithTimestamp<V, T>): Boolean {
@@ -56,8 +56,8 @@ class LastWriteWinsElementDictionary<K, V, T>(
 
         private fun <K, V, T> mergeEntries(
             dictionary: Dictionary<K, V, T>,
-            addedEntries: List<Entry<K, WithTimestamp<V, T>>>,
-            removedEntries: List<Entry<K, T>>
+            addedEntries: Collection<Entry<K, WithTimestamp<V, T>>>,
+            removedEntries: Collection<Entry<K, T>>
         ): Dictionary<K, V, T> where T : Comparable<T> {
             return addedEntries
                 .fold(dictionary) { result, (key, item) -> result.add(key, item.value, item.timestamp) }
