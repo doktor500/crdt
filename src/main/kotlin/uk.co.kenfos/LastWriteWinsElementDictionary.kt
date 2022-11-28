@@ -1,6 +1,7 @@
 package uk.co.kenfos
 
 import java.util.*
+import kotlin.collections.LinkedHashMap
 
 typealias Timestamp = Date
 typealias Dictionary<KEY, VALUE> = LastWriteWinsElementDictionary<KEY, VALUE>
@@ -8,20 +9,22 @@ typealias Dictionary<KEY, VALUE> = LastWriteWinsElementDictionary<KEY, VALUE>
 data class WithTimestamp<VALUE>(val value: VALUE, val timestamp: Timestamp)
 
 class LastWriteWinsElementDictionary<KEY, VALUE>(
-    val added: Map<KEY, WithTimestamp<VALUE>> = emptyMap(),
-    val removed: Map<KEY, Timestamp> = emptyMap()
+    val added: MutableMap<KEY, WithTimestamp<VALUE>> = LinkedHashMap(),
+    val removed: MutableMap<KEY, Timestamp> = LinkedHashMap()
 ) {
     fun add(key: KEY, value: VALUE, timestamp: Timestamp): Dictionary<KEY, VALUE> {
         val item = added[key]
         val newItem = Pair(key, WithTimestamp(value, timestamp))
         val validAdd = item == null || item.timestamp.before(timestamp) || priorityInConflict(item, newItem.second)
-        return if (validAdd) Dictionary(added.plus(newItem), removed) else this
+        if (validAdd) added[key] = WithTimestamp(value, timestamp)
+        return this
     }
 
     fun remove(key: KEY, timestamp: Timestamp): Dictionary<KEY, VALUE> {
         val item = added[key]
         val itemExists = item != null
-        return if (itemExists) Dictionary(added, removed.plus(Pair(key, timestamp))) else this
+        if (itemExists) removed[key] = timestamp
+        return this
     }
 
     fun update(key: KEY, value: VALUE, timestamp: Timestamp): Dictionary<KEY, VALUE> {
