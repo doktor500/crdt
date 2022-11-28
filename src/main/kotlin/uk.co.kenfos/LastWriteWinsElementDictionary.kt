@@ -1,5 +1,7 @@
 package uk.co.kenfos
 
+import kotlin.collections.Map.Entry
+
 typealias Dictionary<K, V, T> = LastWriteWinsElementDictionary<K, V, T>
 
 data class WithTimestamp<V, T>(val value: V, val timestamp: T)
@@ -37,7 +39,7 @@ class LastWriteWinsElementDictionary<K, V, T>(
     }
 
     fun merge(dictionary: Dictionary<K, V, T>): Dictionary<K, V, T> {
-        return merge(this, dictionary)
+        return mergeEntries(this, dictionary.added.entries.toList(), dictionary.removed.entries.toList())
     }
 
     private fun priorityInConflict(item1: WithTimestamp<V, T>, item2: WithTimestamp<V, T>): Boolean {
@@ -49,8 +51,16 @@ class LastWriteWinsElementDictionary<K, V, T>(
         fun <K, V, T> merge(vararg dictionaries: Dictionary<K, V, T>): Dictionary<K, V, T> where T : Comparable<T> {
             val addedEntries = dictionaries.flatMap { dictionary -> dictionary.added.entries }
             val removedEntries = dictionaries.flatMap { dictionary -> dictionary.removed.entries }
+            return mergeEntries(Dictionary(), addedEntries, removedEntries)
+        }
+
+        private fun <K, V, T> mergeEntries(
+            dictionary: Dictionary<K, V, T>,
+            addedEntries: List<Entry<K, WithTimestamp<V, T>>>,
+            removedEntries: List<Entry<K, T>>
+        ): Dictionary<K, V, T> where T : Comparable<T> {
             return addedEntries
-                .fold(Dictionary<K, V, T>()) { result, (key, item) -> result.add(key, item.value, item.timestamp) }
+                .fold(dictionary) { result, (key, item) -> result.add(key, item.value, item.timestamp) }
                 .let { added -> removedEntries.fold(added) { result, entry -> result.remove(entry.key, entry.value) } }
         }
     }

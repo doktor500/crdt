@@ -519,6 +519,7 @@ class LastWriteWinsElementDictionarySpec extends Specification {
         expect:
         dictionary.lookup("A") == "0"
         dictionary.lookup("B") == "1"
+        !dictionary.lookup("C")
 
         where:
         node1 =
@@ -528,7 +529,9 @@ class LastWriteWinsElementDictionarySpec extends Specification {
 
         node2 =
         """
-            OPERATION:ADD KEY:B VALUE:1 TIMESTAMP:1
+            OPERATION:ADD    KEY:B VALUE:1 TIMESTAMP:1
+            OPERATION:ADD    KEY:C VALUE:2 TIMESTAMP:2
+            OPERATION:REMOVE KEY:C         TIMESTAMP:3
         """
     }
 }
