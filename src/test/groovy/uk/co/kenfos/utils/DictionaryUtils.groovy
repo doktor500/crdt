@@ -2,6 +2,8 @@ package uk.co.kenfos.utils
 
 import uk.co.kenfos.LastWriteWinsElementDictionary
 
+import java.time.Instant
+
 import static java.lang.System.lineSeparator
 
 class DictionaryUtils {
@@ -37,7 +39,7 @@ class DictionaryUtils {
     }
 
     private static parseTimeStamp(String timestamp) {
-        new Date(timestamp.toInteger())
+        Instant.ofEpochSecond(timestamp.toLong())
     }
 }
 
@@ -45,7 +47,7 @@ class Event {
     EventType type
     String key
     String value
-    Date timestamp
+    Instant timestamp
 }
 
 enum EventType {
