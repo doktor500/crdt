@@ -22,6 +22,17 @@ the dictionary variant you are going to implement will:
 - There should be a function to merge two dictionaries
 - Test cases should be clearly written and document what aspect of CRDT they test.
 
+### Dependencies
+Java 17+
+Kotlin 1.7.21+
+Gradle 7.4+
+
+### Executing tests
+
+```sh
+./gradlew test
+```
+
 ### Implementation notes
 
 - I decided to use a generic type for the timestamp which implements `Comparable` so objects such as `Instant`, `Date`,
@@ -38,4 +49,5 @@ the dictionary variant you are going to implement will:
 - When there is a conflict (multiple events happening at the exact same instant) between two `ADD` operations or
   an `ADD` and an `UPDATE` operation, the item with the lowest hashcode is retained, with the aim to provide a
   deterministic implementation to handle such conflicts
-- This solution makes the assumption that the size of these dictionaries can be stored in memory  
+- This solution makes the assumption that the size of these dictionaries can be stored in memory
+
