@@ -23,9 +23,10 @@ the dictionary variant you are going to implement will:
 - Test cases should be clearly written and document what aspect of CRDT they test.
 
 ### Dependencies
-Java 17+
-Kotlin 1.7.21+
-Gradle 7.4+
+
+- Java 17+
+- Kotlin 1.7.21+
+- Gradle 7.4+
 
 ### Executing tests
 
