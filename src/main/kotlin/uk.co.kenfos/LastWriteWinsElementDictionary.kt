@@ -19,9 +19,10 @@ class LastWriteWinsElementDictionary<K, V, T>(
     }
 
     fun remove(key: K, timestamp: T): Dictionary<K, V, T> {
-        val item = added[key]
-        val itemExists = item != null
-        if (itemExists) removed[key] = timestamp
+        val addedItem = added[key]
+        val removedItem = removed[key]
+        val itemExists = addedItem != null
+        if (itemExists) removed[key] = if (removedItem != null && removedItem > timestamp) removedItem else timestamp
         return this
     }
 

@@ -130,6 +130,16 @@ class LastWriteWinsElementDictionarySpec : FunSpec({
                     lookup("a") shouldBe null
                 }
             }
+
+            test("multiple remove shouldn't violate Last Write Win") {
+                dictionary.apply {
+                    add("a", 0, timestamp = 1)
+                    remove("a", timestamp = 2)
+                    lookup("a") shouldBe null
+                    remove("a", timestamp = 0)
+                    lookup("a") shouldBe null
+                }
+            }
         }
 
         context("events received multiple times") {
